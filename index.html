@@ -14,32 +14,45 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body class="text-center">
-    <div class="container p-5 m-5">
+    <div id="inicio" class="container p-5 m-5">
       <div class="p-5 m-5 rounded-3 bg-gradient text-light">
-        <img class="w-25" src="img/quiz.png"  alt="" srcset="">
+        <img class="w-25" src="img/quiz.png" alt="" srcset="" />
         <div class="p-3">
-          <select class="form-select m-2" name="categoria" id="categoria-game">
+          <select class="form-select m-2" id="category">
             <option value="">Choose a Category</option>
-            <option value="">op</option>
-            <option value="">op</option>
           </select>
-          <br>
-          <select class="form-select m-2" name="categoria2" id="categoria-game2 " disabled>
+          <br />
+          <select class="form-select m-2" id="difficulty">
             <option value="">Choose a Difficulty</option>
-            <option value="">op</option>
-            <option value="">op</option>
           </select>
-          <br>
-          <button type="button" class="btn btn-dark btn-lg" disabled>Play Chosen</button>
-          <button type="button" class="btn btn-secondary btn-lg" >Aleatory Game</button>
-
+          <br />
+          <button type="button" class="btn btn-dark btn-lg" id="chosen">
+            Play Chosen
+          </button>
+          <button type="button" class="btn btn-secondary btn-lg " id="aleatory">
+            Aleatory Game
+          </button>
         </div>
       </div>
     </div>
+
+    <div class="jogo text-start container p-5 m-5">
+      <div class="p-5 m-5 rounded-3 bg-gradient text-light">
+        <h4 class="m-2" id="mostra-categoria">jogo</h4>
+        <h4 class="m-2" id="mostra-dificuldade">jogo</h4>
+        <h2 id="pergunta">pergunta</h2>
+        <ul class="list-group list-group text-center">
+          <li class="list-group-item list-group-item-info">resposta</li>
+        </ul>
+      </div>
+    </div>
+
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
       crossorigin="anonymous"
     ></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="index.js"></script>
   </body>
 </html>
