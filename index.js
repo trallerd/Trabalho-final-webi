@@ -54,14 +54,18 @@ montaCategoria();
 montaDificuldade();
 
 elementos.botoes.chosenGame.addEventListener("click", () => {
-  axios
-    .get(
-      `${urlBase}/api.php?amount=1&category=${jogo.category}&difficulty=${jogo.dificuldade}`
-    )
-    .then((response) => {
-      jogo.pergunta = response.data.results[0];
-      montaGame();
-    });
+  if (jogo.category != 0 && jogo.dificuldade != "") {
+    axios
+      .get(
+        `${urlBase}/api.php?amount=1&category=${jogo.category}&difficulty=${jogo.dificuldade}`
+      )
+      .then((response) => {
+        jogo.pergunta = response.data.results[0];
+        montaGame();
+      });
+  } else {
+    alert("Chose Difficulty and Category! Or Aleatory Game!");
+  }
 });
 
 elementos.botoes.aleatoryGame.addEventListener("click", () => {
@@ -79,22 +83,22 @@ const montaGame = () => {
   const rando = Math.floor(
     Math.random() * jogo.pergunta.incorrect_answers.length + 1
   );
-  const tam = jogo.pergunta.incorrect_answers.length;
+  const resp = jogo.pergunta.incorrect_answers;
+  const respC = jogo.pergunta.correct_answer;
+  const tam = resp.length;
   for (let i = 0; i < tam; i++) {
     if (rando == i && tam > 1) {
-      elementos.ulGame.innerHTML += `<li onclick="resposta()" class="w-100 list-group-item list-group-item-dark">${jogo.pergunta.correct_answer}</li>`;
+      elementos.ulGame.innerHTML += `<li id="${i}" class="w-100 list-group-item list-group-item-dark">${respC}</li>`;
+      i++;
     } else if (tam <= 1) {
-      elementos.ulGame.innerHTML += `<li onclick="resposta()" class="w-100 list-group-item list-group-item-dark">${jogo.pergunta.correct_answer}</li>`;
-      elementos.ulGame.innerHTML += `<li onclick="resposta()" class="w-100 list-group-item list-group-item-dark">${jogo.pergunta.incorrect_answers[i]}</li>`;
+      elementos.ulGame.innerHTML += `<li id="${i}" class="w-100 list-group-item list-group-item-dark">${respC}</li>`;
+
+      elementos.ulGame.innerHTML += `<li id="${i}" class="w-100 list-group-item list-group-item-dark">${resp[i]}</li>`;
+
       break;
     }
-    elementos.ulGame.innerHTML += `<li onclick="resposta()" class="w-100 list-group-item list-group-item-dark">${jogo.pergunta.incorrect_answers[i]}</li>`;
+    elementos.ulGame.innerHTML += `<li id="${i}" class="w-100 list-group-item list-group-item-dark">${resp[i]}</li>`;
   }
   elementos.telaInicial.style.display = "none";
   elementos.telaJogo.style.display = "flex";
 };
-
-const resposta = () => {
-  console.log("RESPOSTA")
-}; 
-
