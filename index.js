@@ -4,14 +4,16 @@ const elementos = {
   telaJogo: document.getElementById("jogo"),
   categoriaGame: document.getElementById("category"),
   dificuldadeGame: document.getElementById("difficulty"),
-  mCategoria: document.getElementById("mostra-categoria"),
-  mDificuldade: document.getElementById("mostra-dificuldade"),
-  mPergunta: document.getElementById("pergunta"),
+  mCategoria: document.querySelector(".mostra-categoria"),
+  mDificuldade: document.querySelector(".mostra-dificuldade"),
+  mPergunta: document.querySelector(".pergunta"),
   mResposta: document.getElementById("resposta"),
   ulGame: document.getElementById("ul-game"),
   botoes: {
     chosenGame: document.getElementById("chosen"),
     aleatoryGame: document.getElementById("aleatory"),
+    respond: document.getElementById("respond"),
+    back: document.getElementById("back"),
   },
 };
 let uncodeStr = (palavra) => {
@@ -51,11 +53,22 @@ const montaDificuldade = () => {
   }
 };
 
-montaCategoria();
-montaDificuldade();
+const iniciaGame = () => {
+  jogo.category = 0;
+  jogo.dificuldade = "";
+  jogo.pergunta = null;
+  jogo.li = 0;
+  montaCategoria();
+  montaDificuldade();
+  elementos.telaInicial.style.display = "flex";
+  elementos.telaJogo.style.display = "none";
+};
+
+iniciaGame();
 
 elementos.botoes.chosenGame.addEventListener("click", () => {
   if (jogo.category != 0 && jogo.dificuldade != "") {
+    iniciaGame()
     axios
       .get(
         `${urlBase}/api.php?amount=1&category=${jogo.category}&difficulty=${jogo.dificuldade}`
@@ -70,6 +83,8 @@ elementos.botoes.chosenGame.addEventListener("click", () => {
 });
 
 elementos.botoes.aleatoryGame.addEventListener("click", () => {
+  iniciaGame()
+
   axios.get(`${urlBase}/api.php?amount=1`).then((response) => {
     jogo.pergunta = response.data.results[0];
     montaGame();
@@ -81,6 +96,13 @@ const montaGame = () => {
   elementos.mDificuldade.textContent = `${jogo.pergunta.difficulty.toUpperCase()}`;
   const palavra = uncodeStr(jogo.pergunta.question);
   elementos.mPergunta.textContent = `${palavra.toUpperCase()}`;
+
+  elementos.telaInicial.style.display = "none";
+  elementos.telaJogo.style.display = "flex";
+};
+
+const mostraResposta = () => {
+  elementos.botoes.respond.style.display = "none";
   const rando = Math.floor(
     Math.random() * jogo.pergunta.incorrect_answers.length + 1
   );
@@ -97,10 +119,9 @@ const montaGame = () => {
       li.classList.add("list-group-item-dark");
       li.id = i;
       elementos.ulGame.appendChild(li);
-      li.addEventListener('click', () => {
-        li.style.backgroundColor = '#6faf73';
+      li.addEventListener("click", () => {
+        li.style.backgroundColor = "#6faf73";
       });
-      
     } else if (tam == 1) {
       const li = document.createElement("li");
       li.appendChild(document.createTextNode(respC));
@@ -109,8 +130,8 @@ const montaGame = () => {
       li.classList.add("list-group-item-dark");
       li.classList.add(`${i + 1}`);
       elementos.ulGame.appendChild(li);
-      li.addEventListener('click', () => {
-        li.style.backgroundColor = '#6faf73';
+      li.addEventListener("click", () => {
+        li.style.backgroundColor = "#6faf73";
       });
 
       const li2 = document.createElement("li");
@@ -120,9 +141,9 @@ const montaGame = () => {
       li2.classList.add("list-group-item-dark");
       li2.classList.add(`${i}`);
       elementos.ulGame.appendChild(li2);
-      li2.addEventListener('click', () => {
-        li2.style.backgroundColor = '#f87e7e';
-        li.style.backgroundColor = '#6faf73';
+      li2.addEventListener("click", () => {
+        li2.style.backgroundColor = "#f87e7e";
+        li.style.backgroundColor = "#6faf73";
       });
       break;
     }
@@ -133,11 +154,12 @@ const montaGame = () => {
     li.classList.add("list-group-item-dark");
     li.classList.add(`${i}`);
     elementos.ulGame.appendChild(li);
-    li.addEventListener('click', () => {
-      li.style.backgroundColor = '#f87e7e';
-      document.getElementById(`${jogo.li}`).style.backgroundColor = '#6faf73';
+    li.addEventListener("click", () => {
+      li.style.backgroundColor = "#f87e7e";
+      document.getElementById(`${jogo.li}`).style.backgroundColor = "#6faf73";
     });
   }
-  elementos.telaInicial.style.display = "none";
-  elementos.telaJogo.style.display = "flex";
 };
+
+elementos.botoes.respond.addEventListener("click", () => mostraResposta());
+elementos.botoes.back.addEventListener("click", () => iniciaGame());
