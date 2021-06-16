@@ -26,6 +26,7 @@ const jogo = {
   category: 0,
   dificuldade: "",
   pergunta: null,
+  li: 0,
 };
 
 const montaCategoria = () => {
@@ -83,21 +84,59 @@ const montaGame = () => {
   const rando = Math.floor(
     Math.random() * jogo.pergunta.incorrect_answers.length + 1
   );
+  jogo.li = rando;
   const resp = jogo.pergunta.incorrect_answers;
   const respC = jogo.pergunta.correct_answer;
   const tam = resp.length;
   for (let i = 0; i < tam; i++) {
     if (rando == i && tam > 1) {
-      elementos.ulGame.innerHTML += `<li id="${i}" class="w-100 list-group-item list-group-item-dark">${respC}</li>`;
-      i++;
-    } else if (tam <= 1) {
-      elementos.ulGame.innerHTML += `<li id="${i}" class="w-100 list-group-item list-group-item-dark">${respC}</li>`;
+      const li = document.createElement("li");
+      li.appendChild(document.createTextNode(respC));
+      li.classList.add("w-100");
+      li.classList.add("list-group-item");
+      li.classList.add("list-group-item-dark");
+      li.id = i;
+      elementos.ulGame.appendChild(li);
+      li.addEventListener('click', () => {
+        li.style.backgroundColor = '#6faf73';
+      });
+      
+    } else if (tam == 1) {
+      const li = document.createElement("li");
+      li.appendChild(document.createTextNode(respC));
+      li.classList.add("w-100");
+      li.classList.add("list-group-item");
+      li.classList.add("list-group-item-dark");
+      li.classList.add(`${i + 1}`);
+      elementos.ulGame.appendChild(li);
+      li.addEventListener('click', () => {
+        li.style.backgroundColor = '#6faf73';
+      });
 
-      elementos.ulGame.innerHTML += `<li id="${i}" class="w-100 list-group-item list-group-item-dark">${resp[i]}</li>`;
-
+      const li2 = document.createElement("li");
+      li2.appendChild(document.createTextNode(resp[i]));
+      li2.classList.add("w-100");
+      li2.classList.add("list-group-item");
+      li2.classList.add("list-group-item-dark");
+      li2.classList.add(`${i}`);
+      elementos.ulGame.appendChild(li2);
+      li2.addEventListener('click', () => {
+        li2.style.backgroundColor = '#f87e7e';
+        li.style.backgroundColor = '#6faf73';
+      });
       break;
     }
-    elementos.ulGame.innerHTML += `<li id="${i}" class="w-100 list-group-item list-group-item-dark">${resp[i]}</li>`;
+    const li = document.createElement("li");
+    li.appendChild(document.createTextNode(resp[i]));
+    li.classList.add("w-100");
+    li.classList.add("list-group-item");
+    li.classList.add("list-group-item-dark");
+    li.classList.add(`${i}`);
+    elementos.ulGame.appendChild(li);
+    li.addEventListener('click', () => {
+      li.style.backgroundColor = '#f87e7e';
+      document.getElementById(`${jogo.li}`).style.backgroundColor = '#6faf73';
+    });
   }
   elementos.telaInicial.style.display = "none";
   elementos.telaJogo.style.display = "flex";
