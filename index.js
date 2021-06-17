@@ -17,6 +17,7 @@ const elementos = {
     respond: document.getElementById("respond"),
     respondLater: document.getElementById("later"),
     back: document.getElementById("back"),
+    end: document.getElementById("end-game"),
   },
 };
 let uncodeStr = (palavra) => {
@@ -96,6 +97,8 @@ elementos.botoes.aleatoryGame.addEventListener("click", () => {
 
   axios.get(`${urlBase}/api.php?amount=1`).then((response) => {
     jogo.pergunta = response.data.results[0];
+    jogo.category = response.data.results[0].category;
+    jogo.dificuldade = response.data.results[0].difficulty;
     montaGame();
   });
 });
@@ -190,10 +193,9 @@ const contagem = (ponto) => {
 };
 
 const perdeu = () => {
-  jogo.erros = 0;
-  jogo.acertos = 0;
-  iniciaGame();
-  alert("perdeu!")
+  elementos.telaInicial.style.display = "none";
+  elementos.telaFinal.style.display = "flex";
+  elementos.telaJogo.style.display = "none";
 }; 
 
 elementos.botoes.respondLater.addEventListener('click', () => {
@@ -216,3 +218,5 @@ elementos.botoes.sevedQUestion.addEventListener('click', () =>{
 });
 elementos.botoes.respond.addEventListener("click", () => mostraResposta());
 elementos.botoes.back.addEventListener("click", () => iniciaGame());
+elementos.botoes.end.addEventListener("click", () => perdeu());
+
