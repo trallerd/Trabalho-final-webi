@@ -18,6 +18,7 @@ const elementos = {
     respondLater: document.getElementById("later"),
     back: document.getElementById("back"),
     end: document.getElementById("end-game"),
+    novamente: document.getElementById("begin"),
   },
 };
 let uncodeStr = (palavra) => {
@@ -52,6 +53,7 @@ const montaCategoria = () => {
 };
 
 const montaDificuldade = () => {
+  
   for (const dif of dificuldades) {
     const buttond = elementos.dificuldadeGame;
     buttond.innerHTML += `<option value="${dif}">${dif.toUpperCase()}</option>`;
@@ -67,6 +69,9 @@ const iniciaGame = () => {
   jogo.pergunta = null;
   jogo.li = 0;
 
+  elementos.montaCategoria = "";
+  elementos.montaDificuldade = "";
+
   montaCategoria();
   montaDificuldade();
   elementos.telaInicial.style.display = "flex";
@@ -77,15 +82,17 @@ const iniciaGame = () => {
 iniciaGame();
 
 elementos.botoes.chosenGame.addEventListener("click", () => {
+  iniciaGame();
   if (jogo.category != 0 && jogo.dificuldade != "") {
-    iniciaGame();
     axios
       .get(
         `${urlBase}/api.php?amount=1&category=${jogo.category}&difficulty=${jogo.dificuldade}`
       )
       .then((response) => {
         jogo.pergunta = response.data.results[0];
-        montaGame();
+        jogo.category = response.data.results[0].category;
+        jogo.dificuldade = response.data.results[0].difficulty;
+        montaGame(true);
       });
   } else {
     alert("Chose Difficulty and Category! Or Aleatory Game!");
@@ -94,16 +101,18 @@ elementos.botoes.chosenGame.addEventListener("click", () => {
 
 elementos.botoes.aleatoryGame.addEventListener("click", () => {
   iniciaGame();
-
   axios.get(`${urlBase}/api.php?amount=1`).then((response) => {
     jogo.pergunta = response.data.results[0];
     jogo.category = response.data.results[0].category;
     jogo.dificuldade = response.data.results[0].difficulty;
-    montaGame();
+    montaGame(true);
   });
 });
 
-const montaGame = () => {
+const montaGame = (respo) => {
+  if(!respo){
+    elementos.botoes.respondLater.style.display = "none";
+  }
   elementos.mCategoria.textContent = `${jogo.pergunta.category.toUpperCase()}`;
   elementos.mDificuldade.textContent = `${jogo.pergunta.difficulty.toUpperCase()}`;
   const palavra = uncodeStr(jogo.pergunta.question);
@@ -116,6 +125,7 @@ const montaGame = () => {
 
 const mostraResposta = () => {
   elementos.botoes.respond.style.display = "none";
+  elementos.botoes.respondLater.style.display = "none";
   const rando = Math.floor(
     Math.random() * jogo.pergunta.incorrect_answers.length + 1
   );
@@ -180,14 +190,14 @@ const mostraResposta = () => {
 
 const contagem = (ponto) => {
   if (ponto) {
-    respondidas++;
+    jogo.respondidas++;
     jogo.acertos++;
   } else if (jogo.erros == 2) {
-    respondidas++;
+    jogo.respondidas++;
     jogo.erros++;
     perdeu();
   } else {
-    respondidas++;
+    jogo.respondidas++;
     jogo.erros++;
   }
 };
@@ -210,13 +220,13 @@ elementos.botoes.respondLater.addEventListener('click', () => {
 elementos.botoes.sevedQUestion.addEventListener('click', () =>{
   if(jogo.respondLater){
     jogo.pergunta = jogo.respondLater;
-    jogo.respondLater = null;
-    montaGame();
+    montaGame(false);
   }else{
     alert("You need to save a question first!")
   }
 });
 elementos.botoes.respond.addEventListener("click", () => mostraResposta());
 elementos.botoes.back.addEventListener("click", () => iniciaGame());
+elementos.botoes.novamente.addEventListener("click", () => iniciaGame());
 elementos.botoes.end.addEventListener("click", () => perdeu());
 
