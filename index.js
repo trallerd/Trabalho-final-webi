@@ -2,6 +2,7 @@ const urlBase = "https://opentdb.com";
 const elementos = {
   telaInicial: document.getElementById("inicio"),
   telaJogo: document.getElementById("jogo"),
+  telaFinal: document.getElementById("final"),
   categoriaGame: document.getElementById("category"),
   dificuldadeGame: document.getElementById("difficulty"),
   mCategoria: document.querySelector(".mostra-categoria"),
@@ -12,7 +13,9 @@ const elementos = {
   botoes: {
     chosenGame: document.getElementById("chosen"),
     aleatoryGame: document.getElementById("aleatory"),
+    sevedQUestion: document.getElementById("chose-later"),
     respond: document.getElementById("respond"),
+    respondLater: document.getElementById("later"),
     back: document.getElementById("back"),
   },
 };
@@ -28,7 +31,11 @@ const jogo = {
   category: 0,
   dificuldade: "",
   pergunta: null,
+  respondLater: null,
+  respondidas: 0,
   li: 0,
+  erros: 0,
+  acertos: 0,
 };
 
 const montaCategoria = () => {
@@ -58,17 +65,19 @@ const iniciaGame = () => {
   jogo.dificuldade = "";
   jogo.pergunta = null;
   jogo.li = 0;
+
   montaCategoria();
   montaDificuldade();
   elementos.telaInicial.style.display = "flex";
   elementos.telaJogo.style.display = "none";
+  elementos.telaFinal.style.display = "none";
 };
 
 iniciaGame();
 
 elementos.botoes.chosenGame.addEventListener("click", () => {
   if (jogo.category != 0 && jogo.dificuldade != "") {
-    iniciaGame()
+    iniciaGame();
     axios
       .get(
         `${urlBase}/api.php?amount=1&category=${jogo.category}&difficulty=${jogo.dificuldade}`
@@ -83,7 +92,7 @@ elementos.botoes.chosenGame.addEventListener("click", () => {
 });
 
 elementos.botoes.aleatoryGame.addEventListener("click", () => {
-  iniciaGame()
+  iniciaGame();
 
   axios.get(`${urlBase}/api.php?amount=1`).then((response) => {
     jogo.pergunta = response.data.results[0];
@@ -98,6 +107,7 @@ const montaGame = () => {
   elementos.mPergunta.textContent = `${palavra.toUpperCase()}`;
 
   elementos.telaInicial.style.display = "none";
+  elementos.telaFinal.style.display = "none";
   elementos.telaJogo.style.display = "flex";
 };
 
@@ -120,6 +130,7 @@ const mostraResposta = () => {
       li.id = i;
       elementos.ulGame.appendChild(li);
       li.addEventListener("click", () => {
+        contagem(true);
         li.style.backgroundColor = "#6faf73";
       });
     } else if (tam == 1) {
@@ -131,6 +142,7 @@ const mostraResposta = () => {
       li.classList.add(`${i + 1}`);
       elementos.ulGame.appendChild(li);
       li.addEventListener("click", () => {
+        contagem(true);
         li.style.backgroundColor = "#6faf73";
       });
 
@@ -142,6 +154,7 @@ const mostraResposta = () => {
       li2.classList.add(`${i}`);
       elementos.ulGame.appendChild(li2);
       li2.addEventListener("click", () => {
+        contagem(false);
         li2.style.backgroundColor = "#f87e7e";
         li.style.backgroundColor = "#6faf73";
       });
@@ -155,11 +168,51 @@ const mostraResposta = () => {
     li.classList.add(`${i}`);
     elementos.ulGame.appendChild(li);
     li.addEventListener("click", () => {
+      contagem(false);
       li.style.backgroundColor = "#f87e7e";
       document.getElementById(`${jogo.li}`).style.backgroundColor = "#6faf73";
     });
   }
 };
 
+const contagem = (ponto) => {
+  if (ponto) {
+    respondidas++;
+    jogo.acertos++;
+  } else if (jogo.erros == 2) {
+    respondidas++;
+    jogo.erros++;
+    perdeu();
+  } else {
+    respondidas++;
+    jogo.erros++;
+  }
+};
+
+const perdeu = () => {
+  jogo.erros = 0;
+  jogo.acertos = 0;
+  iniciaGame();
+  alert("perdeu!")
+}; 
+
+elementos.botoes.respondLater.addEventListener('click', () => {
+  if(!jogo.respondLater){
+    jogo.respondLater = jogo.pergunta
+    iniciaGame();
+  }else{
+    alert("You have a question saved! Respond that first!")
+  }
+  
+});
+elementos.botoes.sevedQUestion.addEventListener('click', () =>{
+  if(jogo.respondLater){
+    jogo.pergunta = jogo.respondLater;
+    jogo.respondLater = null;
+    montaGame();
+  }else{
+    alert("You need to save a question first!")
+  }
+});
 elementos.botoes.respond.addEventListener("click", () => mostraResposta());
 elementos.botoes.back.addEventListener("click", () => iniciaGame());

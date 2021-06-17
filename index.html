@@ -26,11 +26,14 @@
             <option value="">Choose a Difficulty</option>
           </select>
           <br />
-          <button type="button" class="btn btn-dark btn-lg" id="chosen">
+          <button type="button" class="btn btn-success btn-lg" id="chosen">
             Play Chosen
           </button>
           <button type="button" class="btn btn-secondary btn-lg" id="aleatory">
             Aleatory Game
+          </button>
+          <button type="button" class="btn btn-dark btn-lg" id="chose-later">
+            Answer Saved
           </button>
         </div>
       </div>
@@ -43,11 +46,37 @@
         <h2 class="pergunta">pergunta</h2>
         <ul id="ul-game" class="list-group list-group text-center"></ul>
         <div class="text-center m-3">
-          <button type="button" class="w-25 btn btn-success btn-lg" id="respond">
+          <button
+            type="button"
+            class="w-25 btn btn-success btn-lg"
+            id="respond"
+          >
             Respond
+          </button>
+          <button
+            type="button"
+            class="w-25 btn btn-light btn-lg"
+            id="later"
+          >
+            Respond Later
           </button>
           <button type="button" class="w-25 btn btn-danger btn-lg" id="back">
             Back
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="final" class="w-100 text-start container p-5 m-5">
+      <div class="w-100 p-5 m-5 rounded-2 bg-gradient text-light">
+        <div class="text-center m-3">
+          <h2 id="tabela-final">FIM DE JOGO</h2>
+          <h4 class="w-100 m-2 mostra-pontos">Pontos:</h4>
+          <h4 class="w-100 m-2 mostra-erros">Erros:</h4>
+          <h4 class="w-100 m-2 mostra-acertos">Acertos:</h4>
+          <br />
+          <button type="button" class="w-25 btn btn-success btn-lg" id="begin">
+            Jogar Novamente
           </button>
         </div>
       </div>
