@@ -6,6 +6,12 @@ const elementos = {
   categoriaGame: document.getElementById("category"),
   dificuldadeGame: document.getElementById("difficulty"),
   mCategoria: document.querySelector(".mostra-categoria"),
+  fCategoria: document.querySelector(".final-categoria"),
+  fDificuldade: document.querySelector(".final-dificuldade"),
+  mPontos: document.querySelector(".mostra-pontos"),
+  mRespondidas: document.querySelector(".mostra-respondidas"),
+  mErros: document.querySelector(".mostra-erros"),
+  mAcertos: document.querySelector(".mostra-acertos"),
   mDificuldade: document.querySelector(".mostra-dificuldade"),
   mPergunta: document.querySelector(".pergunta"),
   mResposta: document.getElementById("resposta"),
@@ -36,9 +42,11 @@ const jogo = {
   respondLater: null,
   respondidas: 0,
   li: 0,
+  flagPerg: false,
   click: false,
   erros: 0,
   acertos: 0,
+  pontos: 0,
 };
 
 const montaCategoria = () => {
@@ -215,6 +223,12 @@ const contagem = (ponto) => {
 };
 
 const perdeu = () => {
+  elementos.mPontos.textContent = `Pontos: ${jogo.pontos}`;
+  elementos.mAcertos.textContent = `Acertos: ${jogo.acertos}`;
+  elementos.mErros.textContent = `Erros: ${jogo.erros}`;
+  elementos.mRespondidas.textContent = `N° Respondidas: ${jogo.respondidas}`;
+  elementos.fCategoria.textContent = `Categoria: ${jogo.category}`;
+  elementos.fDificuldade.textContent = `Dificuldade: ${jogo.dificuldade}`;
   elementos.telaInicial.style.display = "none";
   elementos.telaFinal.style.display = "flex";
   elementos.telaJogo.style.display = "none";
@@ -231,6 +245,7 @@ elementos.botoes.respondLater.addEventListener("click", () => {
 elementos.botoes.sevedQUestion.addEventListener("click", () => {
   if (jogo.respondLater) {
     jogo.pergunta = jogo.respondLater;
+    jogo.flagPerg = true;
     montaGame(false);
   } else {
     alert("You need to save a question first!");
