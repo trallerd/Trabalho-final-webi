@@ -18,6 +18,7 @@ const elementos = {
     respondLater: document.getElementById("later"),
     back: document.getElementById("back"),
     end: document.getElementById("end-game"),
+    tEnd: document.getElementById("two-end-game"),
     novamente: document.getElementById("begin"),
   },
 };
@@ -64,13 +65,14 @@ const montaDificuldade = () => {
 };
 
 const iniciaGame = () => {
+
+  elementos.categoriaGame.innerHTML = `<option value="">Chose Category</option>`;
+  elementos.dificuldadeGame.innerHTML = `<option value="">Chose Difficulty</option>`;
+
   jogo.category = 0;
   jogo.dificuldade = "";
   jogo.pergunta = null;
   jogo.li = 0;
-
-  elementos.montaCategoria = "";
-  elementos.montaDificuldade = "";
 
   montaCategoria();
   montaDificuldade();
@@ -82,7 +84,6 @@ const iniciaGame = () => {
 iniciaGame();
 
 elementos.botoes.chosenGame.addEventListener("click", () => {
-  iniciaGame();
   if (jogo.category != 0 && jogo.dificuldade != "") {
     axios
       .get(
@@ -100,7 +101,6 @@ elementos.botoes.chosenGame.addEventListener("click", () => {
 });
 
 elementos.botoes.aleatoryGame.addEventListener("click", () => {
-  iniciaGame();
   axios.get(`${urlBase}/api.php?amount=1`).then((response) => {
     jogo.pergunta = response.data.results[0];
     jogo.category = response.data.results[0].category;
@@ -229,4 +229,5 @@ elementos.botoes.respond.addEventListener("click", () => mostraResposta());
 elementos.botoes.back.addEventListener("click", () => iniciaGame());
 elementos.botoes.novamente.addEventListener("click", () => iniciaGame());
 elementos.botoes.end.addEventListener("click", () => perdeu());
+elementos.botoes.tEnd.addEventListener("click", () => perdeu());
 
