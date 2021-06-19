@@ -75,11 +75,12 @@ const iniciaGame = () => {
   elementos.categoriaGame.innerHTML = `<option value="">Chose Category</option>`;
   elementos.dificuldadeGame.innerHTML = `<option value="">Chose Difficulty</option>`;
 
-  jogo.category = 0;
-  jogo.dificuldade = "";
-  jogo.pergunta = null;
-  jogo.li = 0;
-  jogo.click = false;
+  jogo.category = 0,
+  jogo.dificuldade = "",
+  jogo.pergunta = null,
+  jogo.li = 0,
+  jogo.click = false,
+
 
   montaCategoria();
   montaDificuldade();
@@ -317,6 +318,14 @@ elementos.botoes.sevedQUestion.addEventListener("click", () => {
   }
 });
 elementos.botoes.back.addEventListener("click", () => iniciaGame());
-elementos.botoes.novamente.addEventListener("click", () => iniciaGame());
+elementos.botoes.novamente.addEventListener("click", () => {
+  jogo.respondLater = null,
+  jogo.respondidas =  0,
+  jogo.erros = 0,
+  jogo.acertos = 0,
+  jogo.pontos = 0,
+
+  iniciaGame()
+});
 elementos.botoes.end.addEventListener("click", () => perdeu());
 elementos.botoes.tEnd.addEventListener("click", () => perdeu());
