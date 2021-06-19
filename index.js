@@ -1,3 +1,6 @@
+var audio = new Audio('milhao.mp3');
+audio.play();
+
 const urlBase = "https://opentdb.com";
 const elementos = {
   telaInicial: document.getElementById("inicio"),
