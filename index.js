@@ -207,22 +207,84 @@ const mostraResposta = () => {
   }
 };
 
+const pontos = (acerto, responderL) => {
+  if (acerto) {
+    if (!responderL) {
+      if (jogo.dificuldade == "easy") {
+        jogo.pontos += 5;
+      } else if (jogo.dificuldade == "medium") {
+        jogo.pontos += 8;
+      } else if (jogo.dificuldade == "hard") {
+        jogo.pontos += 10;
+      } else {
+        alert("error");
+      }
+    }else{
+      if (jogo.dificuldade == "easy") {
+        jogo.pontos += 3;
+      } else if (jogo.dificuldade == "medium") {
+        jogo.pontos += 6;
+      } else if (jogo.dificuldade == "hard") {
+        jogo.pontos += 8;
+      } else {
+        alert("error");
+      }
+    }
+  }else if(!acerto){
+    if (jogo.dificuldade == "easy") {
+      jogo.pontos -= 5;
+    } else if (jogo.dificuldade == "medium") {
+      jogo.pontos -= 8;
+    } else if (jogo.dificuldade == "hard") {
+      jogo.pontos -= 10;
+    } else {
+      alert("error");
+    }
+  }
+};
+
 const contagem = (ponto) => {
-  if (ponto) {
-    jogo.respondidas++;
-    jogo.acertos++;
-  } else if (jogo.erros == 2) {
-    jogo.respondidas++;
-    jogo.erros++;
-    window.stop();
-    window.setTimeout(perdeu, 1000);
-  } else {
-    jogo.respondidas++;
-    jogo.erros++;
+  if(jogo.flagPerg){
+    if (ponto) {
+      jogo.respondidas++;
+      jogo.acertos++;
+      pontos(true,true)
+    } else if (jogo.erros == 2) {
+      jogo.respondidas++;
+      jogo.erros++;
+      pontos(false,true)
+      window.stop();
+      window.setTimeout(perdeu, 1000);
+    } else {
+      pontos(false,true)
+      jogo.respondidas++;
+      jogo.erros++;
+    }
+  }else{
+    if (ponto) {
+      jogo.respondidas++;
+      jogo.acertos++;
+      pontos(true,false)
+    } else if (jogo.erros == 2) {
+      jogo.respondidas++;
+      jogo.erros++;
+      pontos(false,false)
+      window.stop();
+      window.setTimeout(perdeu, 1000);
+    } else {
+      pontos(false,false)
+      jogo.respondidas++;
+      jogo.erros++;
+    }
   }
 };
 
 const perdeu = () => {
+  if(jogo.pontos>0){
+    elementos.mPontos.style.color = "#6faf73";
+  }else{
+    elementos.mPontos.style.color = "#f87e7e";
+  }
   elementos.mPontos.textContent = `Pontos: ${jogo.pontos}`;
   elementos.mAcertos.textContent = `Acertos: ${jogo.acertos}`;
   elementos.mErros.textContent = `Erros: ${jogo.erros}`;
@@ -237,6 +299,7 @@ const perdeu = () => {
 elementos.botoes.respondLater.addEventListener("click", () => {
   if (!jogo.respondLater) {
     jogo.respondLater = jogo.pergunta;
+    jogo.flagPerg = true;
     iniciaGame();
   } else {
     alert("You have a question saved! Respond that first!");
@@ -245,6 +308,8 @@ elementos.botoes.respondLater.addEventListener("click", () => {
 elementos.botoes.sevedQUestion.addEventListener("click", () => {
   if (jogo.respondLater) {
     jogo.pergunta = jogo.respondLater;
+    jogo.category = jogo.pergunta.category;
+    jogo.dificuldade = jogo.pergunta.difficulty;
     jogo.flagPerg = true;
     montaGame(false);
   } else {
